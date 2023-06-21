@@ -17,9 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function setPos(boxWrap, rangeRect) {
+function setPos(container, boxWrap, rangeRect) {
   // 设定位置
-  document.documentElement.appendChild(boxWrap);
+  container.appendChild(boxWrap)
+  document.documentElement.appendChild(container);
   const containerWidth = boxWrap.offsetWidth;
   const rangeWidth = rangeRect.right - rangeRect.left;
   const left = rangeRect.left + window.pageXOffset;
@@ -365,15 +366,30 @@ class AxTip {
       return;
     }
     const tipRoot = document.createElement('div');
-    tipRoot.classList.add('bluesea', this.wrapName);
-    tipRoot.style.width = '250px';
-    tipRoot.style.position = 'absolute';
-    tipRoot.style.zIndex = 2147483647;
-    tipRoot.style.userSelect = 'none';
+    tipRoot.classList.add('bluesea');
+    const tipContainer = document.createElement('div');
+    tipContainer.classList.add('bluesea', this.wrapName);
+    const tipRootStyle = {
+      width: '250px',
+      position: 'absolute',
+      zIndex: 2147483647,
+      userSelect: 'none',
+      pointerEvents: 'all',
+    }
+    const tipContainerStyle = {
+      // 在未声明DOCTYPE时，clientWidth的值会互换，参考https://stackoverflow.com/questions/8052178/difference-between-document-documentelement-clientheight-and-document-body-clien
+      width: Math.min(document.documentElement.clientWidth, document.body.clientWidth) + 'px',
+      height: Math.min(document.documentElement.clientHeight, document.body.clientHeight) + 'px',
+      position: 'absolute',
+      left: 0,
+      top: 0,
+      pointerEvents: 'none',
+    }
+    Object.assign(tipRoot.style, tipRootStyle)
+    Object.assign(tipContainer.style, tipContainerStyle)
 
     makeTipEl(tipRoot, props, rect.top >= 150);
-
-    setPos(tipRoot, rect);
+    setPos(tipContainer, tipRoot, rect);
 
     return tipRoot;
   }

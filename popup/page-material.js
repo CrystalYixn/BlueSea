@@ -595,11 +595,16 @@ const Material = () => {
           return;
         const index = parseInt(indexElement.dataset.index)
         const item = list[index];
+        const action = target.dataset.action
 
         switch (e.button) {
           case 0: // 左键
-            if(target.dataset.action === "delete") {
+            if(action === "delete") {
               bluesea.delMaterial(item.text);
+            } else if (action === "modify") {
+              const inputTranslation = prompt('请输入新的翻译')
+              item.translation = inputTranslation || item.translation
+              bluesea.updateMaterialObj(item)
             } else {
               setSelectedMaterial(item);
             }
@@ -668,9 +673,10 @@ const Material = () => {
             <div class="word-options">
               <span
                 style="color:#f00; margin-left: 8px;"
-                data-action="delete"
-              >删除</span
-            >
+                data-action="delete">删除</span>
+              <span
+                style="color:#00f; margin-left: 8px;"
+                data-action="modify">修改</span>
             </div>
           </div>`;
         })}

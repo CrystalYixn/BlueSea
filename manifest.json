@@ -12,7 +12,6 @@
   "background": {
     "scripts": [
       "lib/dayjs.js",
-      "lib/hot-reload.js",
       "logic.js",
       "background/background.js"
     ]

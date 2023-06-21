@@ -22,7 +22,7 @@ function makeBulletApp(
       const listenEnter = () => {
         if (audioRef.current) {
           audioRef.current.play().catch((e) => {
-            console.error(e);
+            // console.error(e);
           });
         }
         setAnimationRunning(false);
@@ -82,6 +82,7 @@ function makeBulletApp(
           ? 'none'
           : '0 0 8px rgba(0, 0, 0, 0.4)',
         background: animationRunning ? 'none' : '#fff',
+        zIndex: 2147483647 - (animationRunning ? 1 : 0),
         top,
       }}
     >
@@ -199,7 +200,6 @@ function makeBulletApp(
           text-align: center;
           left: 500px;
           width: 180px;
-          z-index: 2147483647;
           border-radius: 4px;
           padding: 8px;
           animation: bluesea-bullet-animation ${bulletSpeed}s infinite linear 0s;
@@ -246,6 +246,7 @@ class ButtelScreens {
 
   async getOneMaterial() {
     const list = await bluesea.getNeedLearnList();
+    // 提取所有复习列表中还未发出弹幕的
     const l2 = list.filter((it) => {
       return !this.buttelList.some((a) => a.text === it.text);
     });

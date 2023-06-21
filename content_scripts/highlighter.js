@@ -1,3 +1,8 @@
+/**
+ * 检测元素或遍历父元素是否包含类名blueSea
+ * @param   {Element}   el  元素
+ * @return  {Boolean}
+ */
 const isYTL = (el) => {
   if (!el) {
     return false;

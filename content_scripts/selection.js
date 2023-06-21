@@ -16,6 +16,7 @@ let lastText = '';
 
 
 const listenMouseup = (e) => {
+  // console.log(' ================== 开始匹配选中模式 ================= ')
   if (isYTL(e.target)) {
     return;
   }
@@ -38,11 +39,12 @@ const listenMouseup = (e) => {
 
       // 不翻译中文
       if (!/^[^\u4e00-\u9fa5]+$/.test(selectText)) {
+        // console.log(' ================== 匹配为中文 ================= ')
         return;
       }
 
       if (!/.*[a-zA-Z]{3,}.*/.test(selectText)) {
-        // console.log('所选内容必须存在连续3个及以上字母时，才展开翻译');
+        // console.log(' ================== 匹配单词太短 ================= ')
         return;
       }
 
@@ -53,6 +55,7 @@ const listenMouseup = (e) => {
         // 是否需要兼容，可能存在左右端误选了标点符号的情况呢？
         const symbolReg = /[`~!@#$%^&*()_\-+=<>?:"{}|,.\/;'\\[\]·~！@#￥%……&*（）——\-+={}|《》？：“”【】、；‘'，。、]/im;
         if (symbolReg.test(selectText)) {
+        // console.log(' ================== 匹配到特殊符号 ================= ')
           return;
         }
       }
@@ -60,14 +63,15 @@ const listenMouseup = (e) => {
       // 过滤类似日志文件之类的奇怪玩意。
       // 最长的单词45个字母，Pneumonoultramicroscopicsilicovolcanoconiosis
       if (selectTextArr.some((it) => it.length > 45)) {
+        // console.log(' ================== 匹配单词过长 ================= ')
         return;
       }
 
       // 开始和边界不在黑名单标签内
-      if (inBlackEl(range.startContainer) || inBlackEl(range.endContainer)) {
-        // console.log('选中的内容存在特殊标签内，不展开');
-        return;
-      }
+      // if (inBlackEl(range.startContainer) || inBlackEl(range.endContainer)) {
+      //   console.log('选中的内容存在特殊标签内，不展开');
+      //   return;
+      // }
 
       const rangeRect = range.getBoundingClientRect();
 
