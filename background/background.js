@@ -1,3 +1,7 @@
+// 在 service worker 中导入依赖的脚本
+importScripts('../lib/dayjs.js');
+importScripts('../logic.js');
+
 // chrome.runtime.onInstalled.addListener(async () => {
 //   console.log('欢迎使用');
 // });

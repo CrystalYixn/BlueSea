@@ -2,21 +2,20 @@
   "name": "BlueSea",
   "description": "BlueSea，是一个开源、免费、有趣的英语学习扩展程序。支持划词翻译、单词高亮、单词弹幕、记忆曲线复习、词频统计...等功能",
   "version": "0.0.1",
-  "manifest_version": 2,
+  "manifest_version": 3,
   "homepage_url": "https://github.com/jiangqizheng/BlueSea",
   "permissions": [
     "storage",
     "unlimitedStorage",
     "tabs"
   ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
   "background": {
-    "scripts": [
-      "lib/dayjs.js",
-      "logic.js",
-      "background/background.js"
-    ]
+    "service_worker": "background/background.js"
   },
-  "browser_action": {
+  "action": {
     "default_popup": "popup/popup.html",
     "default_icon": "icon.png"
   },
@@ -39,5 +38,10 @@
       "run_at": "document_start"
     }
   ],
-  "web_accessible_resources": ["*.html", "*.js", "*.css"]
+  "web_accessible_resources": [
+    {
+      "resources": ["*.html", "*.js", "*.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
