@@ -1,3 +1,4 @@
+let lastClickTime = 0
 function makeBulletApp(
   root,
   { material, onOperate, destroy, autoAudio, bulletSpeed }
@@ -106,9 +107,11 @@ function makeBulletApp(
           color: #fff;"
         ref=${ytlBulletContentRef}
         onmouseup=${(e) => {
-          if (e.button === 1 && material.addFrom) {
+          const now = Date.now()
+          if (now - lastClickTime < 300 && e.button === 0 && material.addFrom) {
             window.open(material.addFrom, '_blank');
           }
+          lastClickTime = now
         }}
       >
         <span style="color: #fff">${material.text}</span>
