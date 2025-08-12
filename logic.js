@@ -7,7 +7,7 @@ const {
   useCallback,
   useRef,
   useMemo,
-} = window.$htm || {};
+} = (typeof window !== 'undefined' ? window.$htm : {}) || {};
 
 class Storage {
   constructor(key) {

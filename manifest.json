@@ -27,11 +27,11 @@
         "lib/standalone.module.mini.js",
         "lib/webcomponents-sd-ce.js",
         "logic.js",
-        "content_scripts/tip.jsx",
+        "content_scripts/tip.js",
         "content_scripts/highlighter.js",
         "content_scripts/selection.js",
         "content_scripts/no-translate.js",
-        "content_scripts/bullet-screens.jsx"
+        "content_scripts/bullet-screens.js"
       ],
       "css": ["content_scripts/selection.css"],
       "matches": ["<all_urls>"],
