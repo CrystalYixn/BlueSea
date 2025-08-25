@@ -9,6 +9,9 @@ const {
   useMemo,
 } = (typeof window !== 'undefined' ? window.$htm : {}) || {};
 
+/** 匹配中文圆括号及括号内容正则 */
+const CHINESE_PARENTHESIS_REG = /（[^）]+）/g;
+
 class Storage {
   constructor(key) {
     this.key = key;
@@ -153,7 +156,7 @@ class BlueSea {
     const material = {
       text: t,
       textExts,
-      translation: youdao.translation[0],
+      translation: youdao.translation.map(i => i.replace(CHINESE_PARENTHESIS_REG, '')).join(''),
       ctime: dayjs().format(),
       learn: this.createLearnObj(),
       // 保留完整数据，后面可能会使用
