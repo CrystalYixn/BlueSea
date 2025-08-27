@@ -84,7 +84,6 @@ function makeTipEl(root, options, isBottom) {
     // 仅单词时发音
     const isOneWord = options.text.split(' ').length === 1;
 
-    const audioRef = useRef();
     const [tfData, setTfData] = useState(null);
     const [ableTranslation, setAbleTranslation] = useState(isOneWord);
 
@@ -99,7 +98,11 @@ function makeTipEl(root, options, isBottom) {
       }
     }, [ableTranslation]);
 
-    const config = bluesea.useConfig();
+    const config = bluesea.useConfig((c) => {
+      if (c['自动发音']) {
+        chrome.runtime.sendMessage({ type: 'PLAY_AUDIO', text: options.text });
+      }
+    });
 
     if (!ableTranslation) {
       return html`<div
@@ -176,19 +179,6 @@ function makeTipEl(root, options, isBottom) {
     }
 
     return html`<div class="bluesea-tip notranslate" translate="no">
-      ${isOneWord
-        ? config['自动发音']
-          ? html`<audio
-              src="https://dict.youdao.com/dictvoice?audio=${tfData.query}"
-              ref=${audioRef}
-              autoplay="true"
-            ></audio>`
-          : html`<audio
-              src="https://dict.youdao.com/dictvoice?audio=${tfData.query}"
-              ref=${audioRef}
-              preload="true"
-            ></audio>`
-        : ''}
       <!-- <d-loading /> -->
       <div style="flex: 1;padding: 8px;">
         ${isOneWord
@@ -207,9 +197,10 @@ function makeTipEl(root, options, isBottom) {
                 width="16"
                 height="16"
                 onClick=${() => {
-                  if (audioRef.current) {
-                    audioRef.current.play();
-                  }
+                  chrome.runtime.sendMessage({
+                    type: 'PLAY_AUDIO',
+                    text: options.text,
+                  });
                 }}
               >
                 <path

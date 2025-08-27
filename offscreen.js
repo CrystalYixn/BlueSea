@@ -71,28 +71,36 @@ function parseBingHtmlStrategy(message, sender, sendResponse) {
 }
 
 /** 播放音频消息策略实现 */
-function playAudioStrategy(message, sender, sendResponse) {
-  const audio = new Audio(message.url)
-  audio.play()
+async function playAudioStrategy(message, sender, sendResponse) {
+  const audio = new Audio(
+    `https://dict.youdao.com/dictvoice?audio=${message.text}`
+  )
+  audio.addEventListener('canplay', () => {
+    audio.play()
+  })
+  audio.addEventListener('error', e => {
+    sendResponse({ success: false, error: e.message })
+  })
   sendResponse({ success: true })
 }
 
 /** 消息处理策略对象 */
 const messageStrategy = {
-  'PARSE_BING_HTML': parseBingHtmlStrategy,
+  PARSE_BING_HTML: parseBingHtmlStrategy,
+  PLAY_AUDIO: playAudioStrategy,
 }
 
 // 监听来自 background script 的消息
-chrome.runtime.onMessage.addListener(async(message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
   // 只处理 offscreen 页面应该处理的消息类型
   const strategy = messageStrategy[message.type]
-  if (!strategy) return false;
-  
+  if (!strategy) return false
+
   try {
     // 调度消息策略
     await strategy(message, sender, sendResponse)
   } catch (error) {
     sendResponse({ success: false, error: error.message })
   }
-  return true;
+  return true
 })

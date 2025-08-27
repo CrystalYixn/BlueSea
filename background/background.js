@@ -35,9 +35,6 @@ async function createOffscreen() {
  * @returns {Promise<BingTranslationResult>} 翻译结果
  */
 async function fetchBingTranslation(query) {
-  // 确保 offscreen 页面存在
-  await createOffscreen();
-  
   // 获取 HTML
   const html = await fetch(`https://www.bing.com/dict/search?q=${encodeURIComponent(query)}&cc=cn`).then(r => r.text())
   
@@ -59,7 +56,8 @@ async function fetchBingTranslation(query) {
   }
 }
 
-
+// 确保 offscreen 页面存在
+createOffscreen();
 
 chrome.runtime.onMessage.addListener(
   ({ type, payload }, sender, sendResponse) => {
@@ -75,6 +73,7 @@ chrome.runtime.onMessage.addListener(
           const youdao = {
             query: payload,
             translation: res.dict.map(it => it.pos + it.term[0]),
+            ...res,
           }
           sendResponse(youdao)
           // const res = await fetch(

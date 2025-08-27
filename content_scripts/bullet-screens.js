@@ -11,8 +11,6 @@ function makeBulletApp(
     const [operated, setOperated] = useState(null);
     const [animationRunning, setAnimationRunning] = useState(true);
 
-    const audioRef = useRef();
-
     useEffect(() => {
       const t =
         Math.random() * (document.documentElement.clientHeight - 250) + 32;
@@ -21,11 +19,7 @@ function makeBulletApp(
 
     useEffect(() => {
       const listenEnter = () => {
-        if (audioRef.current) {
-          audioRef.current.play().catch((e) => {
-            // console.error(e);
-          });
-        }
+        chrome.runtime.sendMessage({ type: 'PLAY_AUDIO', text: material.text })
         setAnimationRunning(false);
       };
       const listenLeave = () => {
@@ -87,14 +81,6 @@ function makeBulletApp(
         top,
       }}
     >
-      ${autoAudio
-        ? html`<audio
-            style="display: none"
-            src="https://dict.youdao.com/dictvoice?audio=${material.text}"
-            ref=${audioRef}
-            preload="true"
-          ></audio>`
-        : ''}
       <div
         style="margin: 0 auto;
           background: rgba(0, 0, 0, 0.7);

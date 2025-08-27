@@ -91,7 +91,7 @@ class BlueSea {
     },
   };
   forgettingCurve = [
-    5,
+    0, // 5,
     30,
     12 * 60,
     24 * 60,
@@ -192,12 +192,13 @@ class BlueSea {
     materialsDB.set(newL);
   }
 
-  useConfig() {
+  useConfig(onceCb) {
     const [_config, _setConfig] = useState(null);
     useEffect(() => {
       (async () => {
         const config = await configDB.get();
         _setConfig(config);
+        onceCb?.(config);
         configDB.watch(async (val) => {
           _setConfig(val);
         });
