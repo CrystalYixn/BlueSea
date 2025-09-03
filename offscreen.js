@@ -70,18 +70,32 @@ function parseBingHtmlStrategy(message, sender, sendResponse) {
   sendResponse({ success: true, data: result })
 }
 
+const audio = new Audio()
+
 /** 播放音频消息策略实现 */
 async function playAudioStrategy(message, sender, sendResponse) {
-  const audio = new Audio(
-    `https://dict.youdao.com/dictvoice?audio=${message.text}`
-  )
-  audio.addEventListener('canplay', () => {
+  if (message.text.split(' ').length > 1) return sendResponse({ success: false, error: '播放仅限单个单词' })
+  if (speechSynthesis.speaking) speechSynthesis.cancel()
+
+  const youdaoUrl = `https://dict.youdao.com/dictvoice?audio=${message.text}`
+  const res = await fetch(youdaoUrl, { method: 'head' })
+  if (audio.src === youdaoUrl) {
     audio.play()
-  })
-  audio.addEventListener('error', e => {
-    sendResponse({ success: false, error: e.message })
-  })
-  sendResponse({ success: true })
+  } else if (res.status === 200) {
+    audio.src = youdaoUrl
+    audio.addEventListener('canplay', () => {
+      audio.play()
+    })
+    audio.addEventListener('error', e => {
+      sendResponse({ success: false, error: e.message })
+    })
+    sendResponse({ success: true })
+  } else {
+    // 尝试语音合成降级
+    let utterance = new SpeechSynthesisUtterance(message.text);
+    utterance.voice = speechSynthesis.getVoices().find(i => i.name === 'Google UK English Female');
+    speechSynthesis.speak(utterance);
+  }
 }
 
 /** 消息处理策略对象 */
