@@ -105,16 +105,15 @@ const messageStrategy = {
 }
 
 // 监听来自 background script 的消息
-chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   // 只处理 offscreen 页面应该处理的消息类型
   const strategy = messageStrategy[message.type]
-  if (!strategy) return false
-
-  try {
-    // 调度消息策略
-    await strategy(message, sender, sendResponse)
-  } catch (error) {
-    sendResponse({ success: false, error: error.message })
+  if (strategy) {
+    try {
+      // 调度消息策略
+      strategy(message, sender, sendResponse)
+    } catch (error) {
+      sendResponse({ success: false, error: error.message })
+    }
   }
-  return true
 })
